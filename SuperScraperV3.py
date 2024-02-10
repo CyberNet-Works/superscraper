@@ -6,12 +6,13 @@ import datetime
 import time
 import logging
 import re
+import threading
 
 # Default parameters
 default_params = {
     "input_filename": "input.csv",
     "start_row": 1,
-    "last_row": "none",
+    "last_row": "all",
     "results_to_return": 25,
     "search_engine": "DuckDuckGo",
     "retry_attempts": 3,
@@ -52,6 +53,9 @@ start_time = time.time()
 rows_processed = 0
 total_results_retrieved = 0
 
+# Define a flag for pausing the script
+pause_flag = threading.Event()
+
 def search_duckduckgo(search_term, retry_attempts, retry_delay):
     for attempt in range(retry_attempts):
         try:
@@ -85,10 +89,10 @@ def main(input_csv, output_csv):
     with open(input_csv, 'r') as csv_file:
         csv_reader = csv.reader(csv_file)
         total_rows = sum(1 for _ in csv_reader)
-        if default_params["last_row"].lower() == "none":
-            default_params["last_row"] = total_rows  # Set last_row to total_rows if it's "None" or "none"
+        if default_params["last_row"].lower() == "none" or default_params["last_row"].lower() == "all":
+            default_params["last_row"] = total_rows  # Set last_row to total_rows if it's "None" or "none" or "all"
         else:
-            default_params["last_row"] = int(default_params["last_row"])  # Convert last_row to int if it's not "None" or "none"
+            default_params["last_row"] = int(default_params["last_row"])  # Convert last_row to int if it's not "None" or "none" or "all"
         total_rows_in_range = default_params["last_row"] - default_params["start_row"] + 1  # Calculate total rows in the specified range
         csv_file.seek(0)
         next(csv_reader)  # Skip header
@@ -101,6 +105,10 @@ def main(input_csv, output_csv):
             for row_number, row in enumerate(csv_reader, start=default_params["start_row"]):
                 if row_number > default_params["last_row"]:
                     break
+                if pause_flag.is_set():  # Check if pause flag is set
+                    print("Script paused. Press Enter to resume.")
+                    input()  # Wait for user input to resume
+                    pause_flag.clear()  # Clear pause flag
                 search_term = row[0]
                 timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 print(f"\033[92m{timestamp}\033[0m - \033[91mRow {row_number}\033[0m: \033[93mSearch Term:\033[0m {search_term}")
@@ -122,6 +130,27 @@ def main(input_csv, output_csv):
                 navbar = f"Start Time: {datetime.datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')}  Runtime: {datetime.timedelta(seconds=int(runtime))}  Row: {row_number}  Rows Processed: {rows_processed}/{total_rows_in_range}  Total Results Retrieved: {total_results_retrieved}  Rate: {average_time_per_row:.2f} sec/row  Percent Complete: {percent_complete:.2f}%  Time Remaining: {datetime.timedelta(seconds=int(time_remaining))}  Current Time: {current_time}  Search Engine: {default_params['search_engine']}  Retry Attempts: {default_params['retry_attempts']}  Retry Delay: {default_params['retry_delay']} seconds"
                 print('\033[7m' + navbar + '\033[0m')
 
+# Input handler thread function
+def input_handler():
+    global pause_flag
+    while True:
+        try:
+            input("Press Enter to pause the script: ")
+            pause_flag.set()  # Set pause flag
+            print("Process paused.")
+            input("Press Enter to resume the script: ")
+            pause_flag.clear()  # Clear pause flag
+            print("Process resumed.")
+        except KeyboardInterrupt:
+            print("\nInput handler terminated.")
+            break
+
+
+
 if __name__ == "__main__":
+    # Start input handler thread
+    input_thread = threading.Thread(target=input_handler, daemon=True)
+    input_thread.start()
+
     print("\n\033[92mStarting script execution...\033[0m\n")
     main(default_params["input_filename"], default_params["output_filename"])
