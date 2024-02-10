@@ -70,12 +70,15 @@ def search_duckduckgo(search_term, retry_attempts, retry_delay):
             for i, result_div in enumerate(result_divs):
                 if i < default_params["results_to_return"]:
                     results.append(result_div['href'])
+            if len(results) < 20:  # If less than 20 results retrieved, retry
+                raise Exception("Less than 20 results retrieved")
             return results
         except Exception as e:
             logging.error(f"Error processing search term '{search_term}' on DuckDuckGo: {e}")
             if attempt < retry_attempts - 1:  # If not the last attempt
                 time.sleep(retry_delay)  # Wait for retry_delay seconds before retrying
     return []
+
 
 def get_search_results(search_term):
     if default_params["search_engine"] == "DuckDuckGo":
