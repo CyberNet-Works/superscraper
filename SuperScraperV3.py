@@ -38,10 +38,10 @@ default_params["output_filename"] = output_filename
 default_params["error_log_name"] = error_log_name
 
 # Confirmation of parameters
-print("\033[91mConfirmation:\033[0m")
+print("\033[4m\033[31mConfirmation:\033[0m")
 for key, value in default_params.items():
-    print(f"\033[92m{key}:\033[0m {value}")
-confirmation = input("Continue with these parameters? (y/n): ")
+    print(f"\033[92m{key}:\033[0m  {value}")
+confirmation = input("\033[31mContinue with these parameters? (\033[1my/n): \033[0m")
 if confirmation.lower() != 'y':
     print("Script execution aborted.")
     exit()
@@ -113,7 +113,7 @@ def main(input_csv, output_csv):
                 percent_complete = (rows_processed / total_rows_in_range) * 100
                 time_remaining = (total_rows_in_range - rows_processed) * average_time_per_row
                 current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                navbar = f"\033[91m\033[40mStart Time:\033[0m {datetime.datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')} | \033[30m\033[42mRuntime:\033[0m {datetime.timedelta(seconds=int(runtime))} | \033[30m\033[42mCurrent Row:\033[0m {row_number} | \033[30m\033[42mRows Processed:\033[0m {rows_processed}/{total_rows_in_range} | \033[30m\033[42mTotal Results Retrieved:\033[0m {total_results_retrieved} | \033[30m\033[42mRate:\033[0m {average_time_per_row:.2f} sec/row | \033[92m\033[40mPercent Complete:\033[0m {percent_complete:.2f}% | \033[92m\033[40mTime Remaining:\033[0m {datetime.timedelta(seconds=int(time_remaining))} | \033[92m\033[40mCurrent Time:\033[0m {current_time} | \033[92m\033[40mSearch Engine:\033[0m {default_params['search_engine']}"
+                navbar = f"Start Time: {datetime.datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')}  Runtime: {datetime.timedelta(seconds=int(runtime))}  Row: {row_number}  Rows Processed: {rows_processed}/{total_rows_in_range}  Total Results Retrieved: {total_results_retrieved}  Rate: {average_time_per_row:.2f} sec/row  Percent Complete: {percent_complete:.2f}%  Time Remaining: {datetime.timedelta(seconds=int(time_remaining))}  Current Time: {current_time}  Search Engine: {default_params['search_engine']}"
                 print('\033[7m' + navbar + '\033[0m')
 
 if __name__ == "__main__":
