@@ -1,5 +1,5 @@
 SuperScraper by Cyber-Networks
-SuperScraper is a Python script designed for web scraping search results from DuckDuckGo based on user-defined search terms. It offers various features for customization and efficient data retrieval.
+SuperScraper is a Python script designed for web scraping search results based on user-defined search engines and terms. It offers various features for customization and efficient data retrieval.
 
 Features:
 Customizable Parameters: Users can adjust parameters such as input filename, start row, last row, and number of results to return.
@@ -19,6 +19,7 @@ Libraries: csv, requests, BeautifulSoup, urllib, datetime, time, logging, re
 Usage Example:
 python
 Copy code
+<UPDATE YOUR PARAMS IN THE CODE, THEY WILL BE CONFIRMED WHEN YOU START>
 python SuperScraper.py
 
 Note:
