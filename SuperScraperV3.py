@@ -1,5 +1,6 @@
 #superscraper by cyber-networks
 #make sure to check params: inputfilename, start_row, last_row, results_to_return.
+
 import csv
 import requests
 from bs4 import BeautifulSoup
