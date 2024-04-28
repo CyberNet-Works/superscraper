@@ -62,3 +62,4 @@ try:
 
 except mysql.connector.Error as error:
     print("Error while connecting to MySQL:", error)
+ 
