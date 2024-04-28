@@ -13,7 +13,7 @@ import re
 
 # Default parameters
 default_params = {
-    "input_filename": "input_new.csv",
+    "input_filename": "newlist.csvy",
     "start_row": 1,
     "last_row": 999,
     "results_to_return": 25,
